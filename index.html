@@ -27,14 +27,23 @@
             { facingMode: "environment" }, 
             { fps: 15, qrbox: { width: 250, height: 250 } },
             (decodedText) => {
-                // KETIKA BERHASIL SCAN
+                // === BAGIAN YANG DIUBAH (MULAI) ===
                 pesan.innerHTML = "✅ QR Terdeteksi! Mengirim data...";
                 pesan.style.color = "#28a745";
                 
-                html5QrCode.stop().then(() => {
-                    // Kirim data kembali ke jendela Google Script
+                // 1. Langsung tembak datanya ke Google Apps Script tanpa nunggu kamera mati
+                if (window.opener) {
                     window.opener.postMessage({ type: "HASIL_QR_IMS", text: decodedText }, "*");
-                });
+                }
+
+                // 2. Paksa tutup tab scanner ini setelah 0.5 detik
+                setTimeout(function() {
+                    window.close(); 
+                }, 500);
+
+                // 3. Kamera dimatikan di background belakangan
+                html5QrCode.stop().catch(err => console.log("Kamera dimatikan"));
+                // === BAGIAN YANG DIUBAH (SELESAI) ===
             },
             (errorMessage) => {
                 // Abaikan error saat sistem sedang mencari QR di frame kosong
