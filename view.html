@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Material - IMS SEI RAYA</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f5f5f5; }
         iframe { border: none; width: 100%; height: 100%; }
@@ -14,19 +17,18 @@
     <iframe id="imsFrame" src=""></iframe>
 
     <script>
-        // Ambil parameter dari URL browser (Gunakan window.location.search secara murni)
+        // Menggunakan trik murni window.location untuk bypass cache
         const urlParams = new URLSearchParams(window.location.search);
         const materialId = urlParams.get('id'); 
         
-        // Taruh Link Exec Google Apps Script milikmu
         let googleWebAppUrl = "https://script.google.com/macros/s/AKfycbyYDB7_W0XaIocBytq67NBw3Of4tL-17R7vvJg6Zme8eCtPBp56ge5HSxQ6KGB2Q_7K0Q/exec";
         
-        // JALUR VALIDASI: Pastikan ID benar-benar ada sebelum ditembak ke iframe
-        if (materialId && materialId !== "null") {
-            // Gabungkan URL dengan parameter ID yang bersih
-            document.getElementById('imsFrame').src = googleWebAppUrl + "?id=" + encodeURIComponent(materialId);
+        if (materialId && materialId !== "null" && materialId.trim() !== "") {
+            // Tambahkan acakan angka timestamp (&_cb=) biar Google menganggap ini request fresh baru terus
+            const tumpanganAntiCache = "&_cb=" + new Date().getTime();
+            document.getElementById('imsFrame').src = googleWebAppUrl + "?id=" + encodeURIComponent(materialId.trim()) + tumpanganAntiCache;
         } else {
-            document.body.innerHTML = "<h3 style='text-align:center; margin-top:50px; font-family:Arial, sans-serif; color:#dc3545;'>⚠️ Error: ID Material Tidak Terdeteksi di URL Browser!</h3>";
+            document.body.innerHTML = "<h3 style='text-align:center; margin-top:50px; font-family:Arial, sans-serif; color:#dc3545;'>⚠️ Error: ID Material Tidak Terdeteksi di URL Browser!<br><br><span style='color:#666; font-size:14px;'>URL Terbaca: " + window.location.search + "</span></h3>";
         }
     </script>
 </body>
