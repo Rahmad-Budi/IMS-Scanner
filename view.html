@@ -14,18 +14,19 @@
     <iframe id="imsFrame" src=""></iframe>
 
     <script>
-        // 1. Ambil parameter '?id=xxxx' dari URL browser saat QR Code di-scan
+        // Ambil parameter dari URL browser (Gunakan window.location.search secara murni)
         const urlParams = new URLSearchParams(window.location.search);
-        const materialId = urlParams.get('id');
+        const materialId = urlParams.get('id'); 
         
-        // 2. Tembakkan langsung ke URL Exec Google Apps Script milikmu
+        // Taruh Link Exec Google Apps Script milikmu
         let googleWebAppUrl = "https://script.google.com/macros/s/AKfycbyYDB7_W0XaIocBytq67NBw3Of4tL-17R7vvJg6Zme8eCtPBp56ge5HSxQ6KGB2Q_7K0Q/exec";
         
-        // 3. Jika ID material ada, gabungkan lalu muat di dalam iframe
-        if (materialId) {
-            document.getElementById('imsFrame').src = googleWebAppUrl + "?id=" + materialId;
+        // JALUR VALIDASI: Pastikan ID benar-benar ada sebelum ditembak ke iframe
+        if (materialId && materialId !== "null") {
+            // Gabungkan URL dengan parameter ID yang bersih
+            document.getElementById('imsFrame').src = googleWebAppUrl + "?id=" + encodeURIComponent(materialId);
         } else {
-            document.body.innerHTML = "<h3 style='text-align:center; margin-top:50px; font-family:Arial, sans-serif;'>Error: ID Material Tidak Ditemukan!</h3>";
+            document.body.innerHTML = "<h3 style='text-align:center; margin-top:50px; font-family:Arial, sans-serif; color:#dc3545;'>⚠️ Error: ID Material Tidak Terdeteksi di URL Browser!</h3>";
         }
     </script>
 </body>
